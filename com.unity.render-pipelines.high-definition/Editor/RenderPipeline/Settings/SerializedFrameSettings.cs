@@ -32,12 +32,11 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
         public SerializedProperty enableDistortion;
         public SerializedProperty enablePostprocess;
 
-        public SerializedProperty enableStereo;
-        public SerializedProperty xrGraphicsConfig;
         public SerializedProperty enableAsyncCompute;
 
         public SerializedProperty enableOpaqueObjects;
         public SerializedProperty enableTransparentObjects;
+        public SerializedProperty enableRealtimePlanarReflection;        
 
         public SerializedProperty enableMSAA;
 
@@ -310,28 +309,19 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
                     overrides.intValue &= ~(int)FrameSettingsOverrides.TransparentObjects;
             }
         }
-        public bool overridesStereo
+
+        public bool overridesRealtimePlanarReflection
         {
-            get { return (overrides.intValue & (int)FrameSettingsOverrides.Stereo) > 0; }
+            get { return (overrides.intValue & (int)FrameSettingsOverrides.RealtimePlanarReflection) > 0; }
             set
             {
                 if (value)
-                    overrides.intValue |= (int)FrameSettingsOverrides.Stereo;
+                    overrides.intValue |= (int)FrameSettingsOverrides.RealtimePlanarReflection;
                 else
-                    overrides.intValue &= ~(int)FrameSettingsOverrides.Stereo;
+                    overrides.intValue &= ~(int)FrameSettingsOverrides.RealtimePlanarReflection;
             }
-        }
-        public bool overridesXrGraphicSettings
-        {
-            get { return (overrides.intValue & (int)FrameSettingsOverrides.XrGraphicSettings) > 0; }
-            set
-            {
-                if (value)
-                    overrides.intValue |= (int)FrameSettingsOverrides.XrGraphicSettings;
-                else
-                    overrides.intValue &= ~(int)FrameSettingsOverrides.XrGraphicSettings;
-            }
-        }
+        }        
+
         public bool overridesMSAA
         {
             get { return (overrides.intValue & (int)FrameSettingsOverrides.MSAA) > 0; }
@@ -370,11 +360,10 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             enableTransparentPostpass = root.Find((FrameSettings d) => d.enableTransparentPostpass);
             enableDistortion = root.Find((FrameSettings d) => d.enableDistortion);
             enablePostprocess = root.Find((FrameSettings d) => d.enablePostprocess);
-            enableStereo = root.Find((FrameSettings d) => d.enableStereo);
-            xrGraphicsConfig = root.Find((FrameSettings d) => d.xrGraphicsConfig);
             enableAsyncCompute = root.Find((FrameSettings d) => d.enableAsyncCompute);
             enableOpaqueObjects = root.Find((FrameSettings d) => d.enableOpaqueObjects);
             enableTransparentObjects = root.Find((FrameSettings d) => d.enableTransparentObjects);
+            enableRealtimePlanarReflection = root.Find((FrameSettings d) => d.enableRealtimePlanarReflection);
             enableMSAA = root.Find((FrameSettings d) => d.enableMSAA);
             enableShadowMask = root.Find((FrameSettings d) => d.enableShadowMask);
             overrides = root.Find((FrameSettings d) => d.overrides);

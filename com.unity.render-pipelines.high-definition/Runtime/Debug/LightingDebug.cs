@@ -14,32 +14,6 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
         VisualizeShadowMasks,
         IndirectDiffuseOcclusion,
         IndirectSpecularOcclusion,
-        ScreenSpaceTracingRefraction,
-        ScreenSpaceTracingReflection,
-    }
-
-    [GenerateHLSL]
-    public enum DebugScreenSpaceTracing
-    {
-        None,
-        Color,
-        RayDirWS,
-        HitDepth,
-        HitSuccess,
-        TracingModel,
-        HiZPositionNDC,
-        HiZRayDirNDC,
-        HiZIterationCount,
-        HiZMaxUsedMipLevel,
-        HiZIntersectionKind,
-        HiZHitWeight,
-        HiZSampledColor,
-        HiZDiff,
-        LinearPositionNDC,
-        LinearRayDirNDC,
-        LinearIterationCount,
-        LinearHitWeight,
-        LinearSampledColor
     }
 
     [GenerateHLSL]
@@ -70,7 +44,6 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
         }
 
         public DebugLightingMode    debugLightingMode = DebugLightingMode.None;
-        public DebugScreenSpaceTracing debugScreenSpaceTracingMode = DebugScreenSpaceTracing.None;
         public ShadowMapDebugMode   shadowDebugMode = ShadowMapDebugMode.None;
         public bool                 shadowDebugUseSelection = false;
         public uint                 shadowMapIndex = 0;
@@ -79,6 +52,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
         public float                shadowMinValue = 0.0f;
         public float                shadowMaxValue = 1.0f;
         public float                shadowResolutionScaleFactor = 1.0f;
+        public bool                 clearShadowAtlas = false;
 
         public bool                 overrideSmoothness = false;
         public float                overrideSmoothnessValue = 0.5f;
@@ -92,7 +66,9 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
         public bool                 displaySkyReflection = false;
         public float                skyReflectionMipmap = 0.0f;
 
-        public bool                 displayLightVolumes = false;
+        public bool                         displayLightVolumes = false;
+        public LightLoop.LightVolumeDebug   lightVolumeDebugByCategory = LightLoop.LightVolumeDebug.Gradient;
+        public uint                         maxDebugLightCount = 24;
 
         public float                environmentProxyDepthScale = 20;
 

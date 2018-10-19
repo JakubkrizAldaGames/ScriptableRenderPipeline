@@ -81,6 +81,9 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                     s_Overrides[val](result, this);
                 }
             }
+
+            //propagate override to be chained
+            result.overrides = overrides | overridedFrameSettings.overrides;
             return result;
         }
 
@@ -105,7 +108,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
             aggregate.enableFptlForForwardOpaque = aggregate.enableFptlForForwardOpaque && !aggregateFrameSettings.enableMSAA;
 
             // disable FPTL for stereo for now
-            aggregate.enableFptlForForwardOpaque = aggregate.enableFptlForForwardOpaque && !aggregateFrameSettings.enableStereo;
+            aggregate.enableFptlForForwardOpaque = aggregate.enableFptlForForwardOpaque && XRGraphics.enabled;
 
             // If Deferred, enable Fptl. If we are forward renderer only and not using Fptl for forward opaque, disable Fptl
             aggregate.isFptlEnabled = !aggregateFrameSettings.enableForwardRenderingOnly || aggregate.enableFptlForForwardOpaque;
