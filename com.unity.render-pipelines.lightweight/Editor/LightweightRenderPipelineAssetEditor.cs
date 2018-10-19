@@ -23,7 +23,7 @@ namespace UnityEngine.Experimental.Rendering.LightweightPipeline
             // Quality
             public static GUIContent hdrText = EditorGUIUtility.TrTextContent("HDR", "Controls the global HDR settings.");
             public static GUIContent msaaText = EditorGUIUtility.TrTextContent("Anti Aliasing (MSAA)", "Controls the global anti aliasing settings.");
-            public static GUIContent renderScaleText = EditorGUIUtility.TrTextContent("Render Scale", "Scales the camera render target allowing the game to render at a resolution different than native resolution. UI is always rendered at native resolution.");
+            public static GUIContent renderScaleText = EditorGUIUtility.TrTextContent("Render Scale", "Scales the camera render target allowing the game to render at a resolution different than native resolution. UI is always rendered at native resolution. When VR is enabled, this is overridden by XRSettings.");
 
             // Main light
             public static GUIContent mainLightRenderingModeText = EditorGUIUtility.TrTextContent("Main Light", "Main light is the brightest directional light.");
@@ -47,13 +47,14 @@ namespace UnityEngine.Experimental.Rendering.LightweightPipeline
             public static GUIContent dynamicBatching = EditorGUIUtility.TrTextContent("Dynamic Batching", "If enabled the pipeline will batch drawcalls with few triangles together by copying their vertex buffers into a shared buffer on a per-frame basis.");
             public static GUIContent mixedLightingSupportLabel = EditorGUIUtility.TrTextContent("Mixed Lighting", "Support for mixed light mode.");
 
+            public static GUIContent shaderVariantLogLevel = EditorGUIUtility.TrTextContent("Shader Variant Log Level", "Controls the level logging in of shader variants information is outputted when a build is performed. Information will appear in the Unity console when the build finishes.");
+
             // Dropdown menu options
             public static string[] mainLightOptions = {"None", "Pixel Lighting"};
             public static string[] additionalLightsOptions = {"None", "Pixel Lighting", "Vertex Lighting"};
             public static string[] shadowCascadeOptions = {"No Cascades", "Two Cascades", "Four Cascades"};
             public static string[] opaqueDownsamplingOptions = {"None", "2x (Bilinear)", "4x (Box)", "4x (Bilinear)"};
 
-            public static GUIContent XRConfig = EditorGUIUtility.TrTextContent("XR Graphics Settings", "SRP will attempt to set this configuration to the VRDevice.");
         }
 
         bool m_GeneralSettingsFoldout = false;
@@ -96,7 +97,7 @@ namespace UnityEngine.Experimental.Rendering.LightweightPipeline
         SerializedProperty m_SupportsDynamicBatching;
         SerializedProperty m_MixedLightingSupportedProp;
 
-        SerializedProperty m_XRConfig;
+        SerializedProperty m_ShaderVariantLogLevel;
 
         public override void OnInspectorGUI()
         {
@@ -107,7 +108,6 @@ namespace UnityEngine.Experimental.Rendering.LightweightPipeline
             DrawLightingSettings();
             DrawShadowSettings();
             DrawAdvancedSettings();
-            EditorGUILayout.PropertyField(m_XRConfig);
 
             serializedObject.ApplyModifiedProperties();
         }
@@ -142,7 +142,7 @@ namespace UnityEngine.Experimental.Rendering.LightweightPipeline
             m_SupportsDynamicBatching = serializedObject.FindProperty("m_SupportsDynamicBatching");
             m_MixedLightingSupportedProp = serializedObject.FindProperty("m_MixedLightingSupported");
 
-            m_XRConfig = serializedObject.FindProperty("m_SavedXRConfig");
+            m_ShaderVariantLogLevel = serializedObject.FindProperty("m_ShaderVariantLogLevel");
         }
 
         void DrawGeneralSettings()
@@ -172,7 +172,9 @@ namespace UnityEngine.Experimental.Rendering.LightweightPipeline
                 EditorGUI.indentLevel++;
                 EditorGUILayout.PropertyField(m_HDR, Styles.hdrText);
                 EditorGUILayout.PropertyField(m_MSAA, Styles.msaaText);
+                EditorGUI.BeginDisabledGroup(XRGraphics.enabled);
                 m_RenderScale.floatValue = EditorGUILayout.Slider(Styles.renderScaleText, m_RenderScale.floatValue, k_MinRenderScale, k_MaxRenderScale);
+                EditorGUI.EndDisabledGroup();
                 EditorGUI.indentLevel--;
                 EditorGUILayout.Space();
                 EditorGUILayout.Space();
@@ -267,6 +269,7 @@ namespace UnityEngine.Experimental.Rendering.LightweightPipeline
                 EditorGUI.indentLevel++;
                 EditorGUILayout.PropertyField(m_SupportsDynamicBatching, Styles.dynamicBatching);
                 EditorGUILayout.PropertyField(m_MixedLightingSupportedProp, Styles.mixedLightingSupportLabel);
+                EditorGUILayout.PropertyField(m_ShaderVariantLogLevel, Styles.shaderVariantLogLevel);
                 EditorGUI.indentLevel--;
                 EditorGUILayout.Space();
                 EditorGUILayout.Space();

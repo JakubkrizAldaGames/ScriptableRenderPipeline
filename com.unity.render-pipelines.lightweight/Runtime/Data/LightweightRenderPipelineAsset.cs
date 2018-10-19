@@ -45,7 +45,7 @@ namespace UnityEngine.Experimental.Rendering.LightweightPipeline
         _4xBilinear
     }
 
-    public enum DefaultMaterialType
+    internal enum DefaultMaterialType
     {
         Standard,
         Particle,
@@ -58,6 +58,13 @@ namespace UnityEngine.Experimental.Rendering.LightweightPipeline
         Disabled,
         PerPixel,
         PerVertex,
+    }
+
+    public enum ShaderVariantLogLevel
+    {
+        Disabled,
+        OnlyLightweightRPShaders,
+        AllShaders,
     }
 
     public class LightweightRenderPipelineAsset : RenderPipelineAsset, ISerializationCallbackReceiver
@@ -103,8 +110,6 @@ namespace UnityEngine.Experimental.Rendering.LightweightPipeline
         [SerializeField] bool m_MixedLightingSupported = true;
         // TODO: Render Pipeline Batcher
         
-        [SerializeField] XRGraphicsConfig m_SavedXRConfig = XRGraphicsConfig.s_DefaultXRConfig;
-
         // Deprecated settings
         [SerializeField] ShadowQuality m_ShadowType = ShadowQuality.HardShadows;
         [SerializeField] bool m_LocalShadowsSupported = false;
@@ -112,7 +117,8 @@ namespace UnityEngine.Experimental.Rendering.LightweightPipeline
         [SerializeField] int m_MaxPixelLights = 0;
         [SerializeField] ShadowResolution m_ShadowAtlasResolution = ShadowResolution._256;
 
-        [SerializeField] LightweightRenderPipelineResources m_ResourcesAsset;
+        [SerializeField] LightweightRenderPipelineResources m_ResourcesAsset = null;
+        [SerializeField] ShaderVariantLogLevel m_ShaderVariantLogLevel = ShaderVariantLogLevel.Disabled;
 #if UNITY_EDITOR
         [NonSerialized]
         LightweightRenderPipelineEditorResources m_EditorResourcesAsset;
@@ -353,6 +359,11 @@ namespace UnityEngine.Experimental.Rendering.LightweightPipeline
             get { return m_MixedLightingSupported; }
         }
 
+        public ShaderVariantLogLevel shaderVariantLogLevel
+        {
+            get { return m_ShaderVariantLogLevel; }
+        }
+
         public override Material GetDefaultMaterial()
         {
             return GetMaterial(DefaultMaterialType.Standard);
@@ -436,13 +447,7 @@ namespace UnityEngine.Experimental.Rendering.LightweightPipeline
         {
             get { return resources != null ? resources.samplingShader : null; }
         }
-
-        public XRGraphicsConfig savedXRGraphicsConfig
-        {
-            get { return m_SavedXRConfig; }
-            set { m_SavedXRConfig = value;  }
-        }
-
+        
         public void OnBeforeSerialize()
         {
         }
