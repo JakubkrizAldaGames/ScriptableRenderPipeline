@@ -51,13 +51,7 @@ namespace UnityEngine.Experimental.Rendering.LightweightPipeline
 
             // Dropdown menu options
             public static string[] mainLightOptions = { "None", "Pixel Lighting" };
-            public static string[] additionalLightsOptions = { "None", "Pixel Lighting", "Vertex Lighting" };
 
-            public enum additionalLightsOptionsEnum {
-            None = 0,
-            VertexLighting = 2,
-            PixelLighting = 1
-            };
             public static string[] shadowCascadeOptions = {"No Cascades", "Two Cascades", "Four Cascades"};
             public static string[] opaqueDownsamplingOptions = {"None", "2x (Bilinear)", "4x (Box)", "4x (Bilinear)"};
 
