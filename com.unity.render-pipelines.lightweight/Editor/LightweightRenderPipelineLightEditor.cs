@@ -2,6 +2,7 @@ using System;
 using UnityEditor.AnimatedValues;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering.LightweightPipeline;
+using UnityEngine.Rendering;
 
 namespace UnityEditor.Experimental.Rendering.LightweightPipeline
 {
@@ -78,15 +79,13 @@ namespace UnityEditor.Experimental.Rendering.LightweightPipeline
         SerializedObject m_AdditionalLightDataSO;
 
         SerializedProperty m_UseAdditionalDataProp;
-        SerializedProperty m_DepthBiasProp;
-        SerializedProperty m_NormalBiasProp;
 
 
         protected override void OnEnable()
         {
             m_AdditionalLightData = lightProperty.gameObject.GetComponent<LWRPAdditionalLightData>();
-            init(m_AdditionalLightData);
             settings.OnEnable();
+            init(m_AdditionalLightData);
             UpdateShowOptions(true);
         }
 
@@ -96,8 +95,11 @@ namespace UnityEditor.Experimental.Rendering.LightweightPipeline
                 return;
             m_AdditionalLightDataSO = new SerializedObject(additionalLightData);
             m_UseAdditionalDataProp = m_AdditionalLightDataSO.FindProperty("m_UsePipelineSettings");
-            m_DepthBiasProp = m_AdditionalLightDataSO.FindProperty("m_DepthBias");
-            m_NormalBiasProp = m_AdditionalLightDataSO.FindProperty("m_NormalBias");
+
+            LightweightRenderPipelineAsset asset = GraphicsSettings.renderPipelineAsset as LightweightRenderPipelineAsset;
+            settings.shadowsBias.floatValue = asset.shadowDepthBias;
+            settings.shadowsNormalBias.floatValue = asset.shadowNormalBias;
+            settings.ApplyModifiedProperties();
         }
 
         public override void OnInspectorGUI()
@@ -219,8 +221,8 @@ namespace UnityEditor.Experimental.Rendering.LightweightPipeline
             if (selectedUseAdditionalData != 1 && m_AdditionalLightDataSO != null)
             {
                 EditorGUI.indentLevel++;
-                EditorGUILayout.Slider(m_DepthBiasProp, 0f, 10f, "Depth");
-                EditorGUILayout.Slider(m_NormalBiasProp, 0f, 10f, "Normal");
+                EditorGUILayout.Slider(settings.shadowsBias, 0f, 10f, "Depth");
+                EditorGUILayout.Slider(settings.shadowsNormalBias, 0f, 10f, "Normal");
                 EditorGUI.indentLevel--;
 
                 m_AdditionalLightDataSO.ApplyModifiedProperties();
